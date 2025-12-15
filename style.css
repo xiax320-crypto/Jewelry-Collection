@@ -1,0 +1,146 @@
+/* 基础重置 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    background-color: #ededed; 
+    font-family: 'Helvetica', sans-serif; 
+    height: 100vh; width: 100vw;
+    display: flex; flex-direction: column; overflow: hidden; 
+}
+
+/* 标题：Helvetica Light */
+header { height: 15vh; display: flex; align-items: center; justify-content: center; z-index: 20; }
+header h1 { 
+    font-family: 'Helvetica-Light', 'Helvetica', sans-serif;
+    font-weight: 300; font-size: 2rem; letter-spacing: 3px; 
+    text-transform: uppercase; color: #222;
+}
+
+/* 返回按钮 */
+.back-arrow {
+    position: fixed; top: 35px; left: 40px; width: 50px; height: 50px;
+    background: #fff; border: 1px solid #000; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 1.4rem; cursor: pointer; z-index: 100;
+    opacity: 0; pointer-events: none; transition: 0.4s ease;
+}
+.back-arrow.visible { opacity: 1; pointer-events: auto; }
+.back-arrow:hover { background-color: #ADD8E6; border-color: #ADD8E6; }
+
+/* 主容器与书本定位 */
+main { flex: 1; position: relative; perspective: 2500px; width: 100%; }
+.book-container {
+    position: absolute; top: 45%; left: 50%;
+    transform: translate(-50%, -50%); transform-style: preserve-3d;
+    transition: transform 1s ease; z-index: 5;
+}
+
+/* 状态 0：封面 */
+.simple-silhouette {
+    width: 450px; height: 630px; 
+    background-image: url('images/book-cover-closed.png'); /* 【此处换封面图】 */
+    background-size: cover; background-position: center;
+    cursor: pointer; transform-origin: left center;
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    backface-visibility: hidden; box-shadow: 10px 10px 40px rgba(0,0,0,0.15);
+}
+.simple-silhouette:hover { transform: rotateY(-12deg); }
+
+/* 书本体 */
+.opened-book {
+    position: absolute; top: 50%; left: 50%;
+    width: 900px; height: 630px; transform: translate(-50%, -50%);
+    background-color: #fff; opacity: 0; pointer-events: none;
+    transition: opacity 0.6s ease; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
+/* 激活逻辑 */
+.book-container.active .simple-silhouette { transform: rotateY(-180deg); opacity: 0; }
+.book-container.active .opened-book { opacity: 1; pointer-events: auto; }
+
+/* 页面内容 */
+.spread-wrapper { display: flex; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.page-left, .page-right { flex: 1; height: 100%; position: relative; overflow: hidden; background: #fff; }
+.spine-shadow { position: absolute; right: 0; top: 0; width: 40px; height: 100%; background: linear-gradient(to left, rgba(0,0,0,0.1), transparent); z-index: 5; }
+
+/* 网格设置 */
+.intro-grid { display: grid; grid-template-columns: repeat(2, 200px); grid-template-rows: repeat(2, 260px); gap: 15px; padding: 30px; justify-content: center; align-content: center; }
+.intro-grid img, .page-left img { width: 100%; height: 100%; object-fit: contain; }
+
+/* --- 修改后的 CSS --- */
+.category-full-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 依然保持4列排列 */
+    
+    /* 1. 【删除】原来的 grid-template-rows: repeat(3, 1fr); */
+    /* 2. 【添加】设定每一行图片的基础高度，防止它们塌陷 */
+    grid-auto-rows: 200px; 
+    
+    gap: 12px;
+    padding: 25px;
+    width: 100%;
+    height: 100%; /* 必须有固定高度，滚动条才会出现 */
+
+    /* 3. 【核心修改】开启垂直滚动条 */
+    overflow-y: scroll;  /* 强制显示滚动条，或者用 auto */
+    overflow-x: hidden;  /* 禁止左右滑动 */
+    
+    /* 4. 【添加】确保内容从顶部对齐，不会在只有几张图时垂直居中 */
+    align-content: start; 
+}
+
+/* 5. 【可选：美化滚动条】让它在书页上看起来更优雅 */
+.category-full-grid::-webkit-scrollbar {
+    width: 8px;
+}
+.category-full-grid::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05); /* 轨道颜色 */
+}
+.category-full-grid::-webkit-scrollbar-thumb {
+    background: #bbb; /* 滑块颜色 */
+    border-radius: 4px;
+}
+.gallery-item { position: relative; background: #fdfdfd; overflow: hidden; border: 1px solid #eee; }
+.gallery-item .main-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s ease; }
+
+/* 表格悬停动效 */
+.table-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255,255,255,0.98); opacity: 0; transform: translateY(15px); 
+    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex; align-items: center; justify-content: center; pointer-events: none;
+}
+.table-overlay img { width: 120%; height: 120%; object-fit: contain; }
+.gallery-item:hover .table-overlay { opacity: 1; transform: translateY(0); }
+
+/* --- 侧边导航丝滑动效 --- */
+.side-nav { 
+    position: fixed; right: 40px; top: 50%; 
+    transform: translate(200%, -50%); /* 初始隐藏 */
+    display: flex; flex-direction: column; gap: 15px; 
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1); 
+    z-index: 20; 
+}
+.side-nav.visible { transform: translate(0, -50%); }
+
+.nav-btn { 
+    background: #fff; color: #000; border: 1px solid #000; 
+    padding: 12px 28px; border-radius: 50px; cursor: pointer; 
+    font-family: 'Helvetica', sans-serif; font-size: 0.85rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    /* 丝滑过渡的关键：all 加上合适的曲线 */
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); 
+    white-space: nowrap;
+}
+
+/* 鼠标移上去的效果：变色 + 向左滑动 */
+.nav-btn:hover, .nav-btn.active { 
+    background-color: #ADD8E6; 
+    border-color: #ADD8E6; 
+    color: #000;
+    transform: translateX(-10px); /* 向左平移 */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* 翻页过渡 */
+.flipping-page { position: absolute; right: 0; top: 0; width: 50%; height: 100%; background: #fff; transform-origin: left center; z-index: 20; display: none; }
+@keyframes pageFlip { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(-180deg); } }

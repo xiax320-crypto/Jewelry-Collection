@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details in My Jewelry Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details in My Jewelry Collection</title>
+
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<link rel="apple-touch-icon" href="favicon.png">
+</head>
+<body>
+
+    <button id="backBtn" class="back-arrow" aria-label="返回">&larr;</button>
+
+    <header>
+        <h1>Details in My Jewelry Collection</h1>
+    </header>
+
+    <main>
+        <div class="scene">
+            <div class="book-container" id="bookContainer">
+                
+                <div class="simple-silhouette" id="cover"></div>
+
+                <div class="opened-book" id="openedBook">
+                    
+                    <div class="spread-wrapper" id="introView">
+                        <div class="page-left">
+                            <img src="images/p2.png" alt="Intro">
+                            <div class="spine-shadow"></div>
+                        </div>
+                        <div class="page-right">
+                            <div class="intro-grid">
+                                <img src="p3.png">
+                                <img src="p8.png">
+                                <img src="p13.png">
+                                <img src="p18.png">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="spread-wrapper" id="categoryView" style="display: none;">
+                        <div class="category-full-grid" id="fullGalleryGrid">
+                            </div>
+                    </div>
+
+                    <div class="flipping-page" id="pageFlipOverlay"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="side-nav" id="sideNav">
+        <button class="nav-btn" data-category="Blue">Blue</button>
+        <button class="nav-btn" data-category="BW">B&W</button>
+        <button class="nav-btn" data-category="Sketch">Sketch</button>
+        <button class="nav-btn" data-category="Silhouette">Silhouette</button>
+        <button class="nav-btn" data-category="Printing">Printing</button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
